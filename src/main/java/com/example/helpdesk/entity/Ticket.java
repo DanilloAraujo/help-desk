@@ -10,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.example.helpdesk.enums.PriorityEnum;
 import com.example.helpdesk.enums.StatusEnum;
@@ -44,7 +44,7 @@ public class Ticket {
 	
 	private String image;
 	
-	@OneToMany
+	@Transient
 	private List<ChangeStatus> changes;
 
 	public Long getId() {
