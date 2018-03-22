@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.example.helpdesk.enums.PriorityEnum;
 import com.example.helpdesk.enums.StatusEnum;
@@ -20,6 +22,7 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@ManyToOne
 	private User user;
 
 	private LocalDate date;
@@ -34,12 +37,14 @@ public class Ticket {
 	@Enumerated(EnumType.STRING)
 	private PriorityEnum priority;
 	
+	@ManyToOne
 	private User assignedUser;
 	
 	private String description;
 	
 	private String image;
 	
+	@OneToMany
 	private List<ChangeStatus> changes;
 
 	public Long getId() {

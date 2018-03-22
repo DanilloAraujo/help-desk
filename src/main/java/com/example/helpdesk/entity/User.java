@@ -1,6 +1,5 @@
 package com.example.helpdesk.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,7 +18,6 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "codigo_user")
 	private Long id;
 
 	@NotBlank(message = "E-mail required")

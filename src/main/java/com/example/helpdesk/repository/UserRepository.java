@@ -6,5 +6,5 @@ import com.example.helpdesk.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	User findByEmai(String email);
+	User findByEmail(String email);
 }

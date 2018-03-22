@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import com.example.helpdesk.enums.StatusEnum;
 
@@ -18,8 +19,10 @@ public class ChangeStatus {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@ManyToOne
 	private Ticket ticket;
 	
+	@ManyToOne
 	private User userChange;
 	
 	private LocalDate dateChangeStatus;
