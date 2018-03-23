@@ -9,6 +9,7 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.helpdesk.entity.ChangeStatus;
 import com.example.helpdesk.entity.Ticket;
 import com.example.helpdesk.entity.User;
+import com.example.helpdesk.enums.ProfileEnum;
 import com.example.helpdesk.enums.StatusEnum;
 import com.example.helpdesk.response.Response;
 import com.example.helpdesk.security.jwt.JwtTokenUtil;
@@ -156,6 +158,54 @@ public class TicketController {
 		}
 		this.ticketService.delete(id);
 		return ResponseEntity.ok(new Response<String>());
+	}
+
+	@GetMapping("{page}/{count}")
+	@PreAuthorize("hasAnyRole('CUSTOMER', 'TECHNICIAN')")
+	public ResponseEntity<Response<Page<Ticket>>> findAll(HttpServletRequest request, @PathVariable int page,
+			@PathVariable int count) {
+		Response<Page<Ticket>> response = new Response<Page<Ticket>>();
+		Page<Ticket> tickets = null;
+		User userRequest = this.userFromRequest(request);
+		if (userRequest.getProfile().equals(ProfileEnum.ROLE_TECHNICIAN)) {
+			tickets = this.ticketService.listTicket(page, count);
+		} else if (userRequest.getProfile().equals(ProfileEnum.ROLE_CUSTOMER)) {
+			tickets = this.ticketService.findByCurrentUser(page, count, userRequest.getId());
+		}
+		response.setData(tickets);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("{page}/{count}/{number}/{title}/{status}/{priority}/{assigned}")
+	@PreAuthorize("hasAnyRole('CUSTOMER', 'TECHNICIAN')")
+	public ResponseEntity<Response<Page<Ticket>>> findByParams(HttpServletRequest request, @PathVariable int page,
+			@PathVariable int count, @PathVariable Long number, @PathVariable String title, @PathVariable String status,
+			@PathVariable String priority, @PathVariable boolean assigned) {
+
+		title = title.equals("uninformed") ? "" : title;
+		status = status.equals("uninformed") ? "" : status;
+		priority = priority.equals("uninformed") ? "" : priority;
+
+		Response<Page<Ticket>> response = new Response<Page<Ticket>>();
+		Page<Ticket> tickets = null;
+		if (number > 0) {
+			tickets = this.ticketService.findByNumber(page, count, number);
+		} else {
+			User userRequest = this.userFromRequest(request);
+			if (userRequest.getProfile().equals(ProfileEnum.ROLE_TECHNICIAN)) {
+				if (assigned) {
+					tickets = this.ticketService.findByParameterAndAssignedUser(page, count, title, status, priority,
+							userRequest.getId());
+				} else {
+					tickets = this.ticketService.findByParameters(page, count, title, status, priority);
+				}
+			} else if (userRequest.getProfile().equals(ProfileEnum.ROLE_CUSTOMER)) {
+				tickets = this.ticketService.findByParametersAndCurrentUser(page, count, title, status, priority,
+						userRequest.getId());
+			}
+		}
+		response.setData(tickets);
+		return ResponseEntity.ok(response);
 	}
 
 }
