@@ -70,7 +70,7 @@ public class TicketServiceImpl implements TicketService {
 			String priority, Long userId) {
 		Pageable pages = new PageRequest(page, count);
 		return this.ticketRepository.findByTitleIgnoreCaseContainingAndStatusAndPriorityAndUserIdOrderByDateDesc(title,
-				status, priority, pages);
+				status, priority, userId, pages);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class TicketServiceImpl implements TicketService {
 		Pageable pages = new PageRequest(page, count);
 		return this.ticketRepository
 				.findByTitleIgnoreCaseContainingAndStatusAndPriorityAndAssignedUserIdOrderByDateDesc(title, status,
-						priority, pages);
+						priority, assignedUser, pages);
 	}
 
 }
