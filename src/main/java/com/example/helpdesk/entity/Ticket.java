@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 import com.example.helpdesk.enums.PriorityEnum;
 import com.example.helpdesk.enums.StatusEnum;
@@ -42,6 +43,7 @@ public class Ticket {
 	
 	private String description;
 	
+	@Size(max = 2000000)
 	private String image;
 	
 	@Transient
