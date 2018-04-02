@@ -224,7 +224,7 @@ public class TicketController {
 				return ResponseEntity.badRequest().body(response);
 			}
 			Ticket currentTicket = this.ticketService.findById(id);
-			ticket.setStatus(StatusEnum.getStatus(status));
+			currentTicket.setStatus(StatusEnum.getStatus(status));
 			if (status.equals("Assigned")) {
 				currentTicket.setAssignedUser(this.userFromRequest(request));
 			}
